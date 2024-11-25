@@ -11,12 +11,16 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 fetch('data/kolvi_1.json')
   .then(response => response.json())
   .then(data => {
+    // Add the GeoJSON layer to the map
     const geojsonLayer = L.geoJSON(data, {
       onEachFeature: function (feature, layer) {
         const { VDC, WARDNO, PARCELNO } = feature.properties;
-        layer.bindPopup(`VDC: ${VDC}<br>Ward No: ${WARDNO}<br>Parcel No: ${PARCELNO}`);
+        layer.bindPopup(`VDC: ${VDC}<br>Ward: ${WARDNO}<br>Kitta No: ${PARCELNO}`);
       }
     }).addTo(map);
+
+    // Zoom to the bounds of the GeoJSON data on load
+    map.fitBounds(geojsonLayer.getBounds());
 
     // Add search functionality
     document.getElementById('search-form').addEventListener('submit', function (e) {
