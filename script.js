@@ -3,7 +3,7 @@ const map = L.map('map').setView([27.7, 85.4], 14);
 
 // Add a base layer with transparency
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  opacity: 0.7,
+  opacity: 0.4,
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
@@ -31,13 +31,13 @@ fetch('data/kolvi_1.json')
           map.fitBounds(layer.getBounds());
           layer.setStyle({
             color: 'red',
-            weight: 3
+            weight: 1
           });
           layer.openPopup();
         } else {
           layer.setStyle({
             color: 'blue',
-            weight: 1
+            weight: 0.4
           });
         }
       });
