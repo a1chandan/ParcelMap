@@ -3,7 +3,7 @@ const map = L.map('map').setView([27.7, 85.4], 14);
 
 // Add a base layer with transparency
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  opacity: 0.4,
+  opacity: 0.5,
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
