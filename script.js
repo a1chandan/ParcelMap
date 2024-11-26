@@ -7,6 +7,13 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
+// Add distance measurement control
+L.control.measure({
+  primaryLengthUnit: 'feet',
+  secondaryLengthUnit: 'meters',
+  position: 'bottomleft'
+}).addTo(map);
+
 // Variables to store the GeoJSON layers
 let geojsonLayer; // Full dataset (Sheet Map)
 let parcelLayer;  // Filtered dataset (Parcel Map)
@@ -23,7 +30,7 @@ fetch('data/kolvi_1.json')
       },
       style: {
         color: 'blue',
-        weight: 0.4
+        weight: 1
       }
     });
 
@@ -35,7 +42,7 @@ fetch('data/kolvi_1.json')
       },
       style: {
         color: 'red',
-        weight: 0.4
+        weight: 2
       }
     }).addTo(map);
 
@@ -44,12 +51,10 @@ fetch('data/kolvi_1.json')
 
     // Function to filter data based on query and display only the filtered parcels
     const displayFilteredData = (filterFunction) => {
-      // Clear the previous parcelLayer from the map
       if (parcelLayer) {
         map.removeLayer(parcelLayer);
       }
 
-      // Create a new parcelLayer with the filtered data
       parcelLayer = L.geoJSON(data, {
         filter: filterFunction,
         onEachFeature: function (feature, layer) {
@@ -62,7 +67,6 @@ fetch('data/kolvi_1.json')
         }
       }).addTo(map);
 
-      // Zoom to the filtered parcel's bounds
       if (parcelLayer.getLayers().length > 0) {
         map.fitBounds(parcelLayer.getBounds());
       } else {
@@ -95,7 +99,7 @@ fetch('data/kolvi_1.json')
     });
 
     // Create a legend with checkboxes
-    const legend = L.control({ position: 'topright' });
+    const legend = L.control({ position: 'bottomright' });
 
     legend.onAdd = function () {
       const div = L.DomUtil.create('div', 'legend');
