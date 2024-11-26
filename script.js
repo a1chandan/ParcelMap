@@ -29,7 +29,7 @@ fetch('data/kolvi_1.json')
           layer.bindPopup(`VDC: ${VDC}<br>Ward No: ${WARDNO}<br>Parcel No: ${PARCELNO}`);
         },
         style: {
-          color: 'blue',
+          color: 'black',
           weight: 1
         }
       }).addTo(map);
