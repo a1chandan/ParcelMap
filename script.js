@@ -7,36 +7,55 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-// Variable to store the GeoJSON layer
-let geojsonLayer;
+// Variables to store the GeoJSON layers
+let geojsonLayer; // Layer for the full dataset
+let parcelLayer;  // Layer for the filtered data
 
 // Load GeoJSON data
 fetch('data/kolvi_1.json')
   .then(response => response.json())
   .then(data => {
-    // Function to create a GeoJSON layer with filtered data
-    const createFilteredLayer = (filterFunction) => {
-      // Remove any existing layer
-      if (geojsonLayer) {
-        map.removeLayer(geojsonLayer);
+    // Function to add the full GeoJSON data to the map
+    const loadFullData = () => {
+      geojsonLayer = L.geoJSON(data, {
+        onEachFeature: function (feature, layer) {
+          const { VDC, WARDNO, PARCELNO } = feature.properties;
+          layer.bindPopup(`VDC: ${VDC}<br>Ward No: ${WARDNO}<br>Parcel No: ${PARCELNO}`);
+        },
+        style: {
+          color: 'blue',
+          weight: 0.4
+        }
+      }).addTo(map);
+
+      // Zoom to the full extent of the data
+      map.fitBounds(geojsonLayer.getBounds());
+    };
+
+    // Function to filter data based on query and display only the filtered parcels
+    const displayFilteredData = (filterFunction) => {
+      // Remove the existing filtered layer, if any
+      if (parcelLayer) {
+        map.removeLayer(parcelLayer);
       }
 
-      // Add a new filtered GeoJSON layer
-      geojsonLayer = L.geoJSON(data, {
+      // Create a new layer for the filtered data
+      parcelLayer = L.geoJSON(data, {
         filter: filterFunction,
         onEachFeature: function (feature, layer) {
           const { VDC, WARDNO, PARCELNO } = feature.properties;
           layer.bindPopup(`VDC: ${VDC}<br>Ward No: ${WARDNO}<br>Parcel No: ${PARCELNO}`);
         },
         style: {
-          color: 'black',
+          color: 'red',
           weight: 1
         }
       }).addTo(map);
 
-      // Adjust map view to the bounds of the filtered layer
-      if (geojsonLayer.getLayers().length > 0) {
-        map.fitBounds(geojsonLayer.getBounds());
+      // Check if there are any matching parcels
+      if (parcelLayer.getLayers().length > 0) {
+        // Zoom to the bounds of the filtered layer
+        map.fitBounds(parcelLayer.getBounds());
       } else {
         alert('No parcels found matching your query.');
       }
@@ -59,11 +78,11 @@ fetch('data/kolvi_1.json')
         );
       };
 
-      // Create a filtered GeoJSON layer
-      createFilteredLayer(filterFunction);
+      // Display only the filtered parcels
+      displayFilteredData(filterFunction);
     });
 
-    // Display all parcels on initial load
-    createFilteredLayer(() => true);
+    // Load the full data initially
+    loadFullData();
   })
   .catch(error => console.error('Error loading GeoJSON:', error));
