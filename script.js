@@ -25,14 +25,31 @@ fetch('data/kolvi_1.json')
         color: 'blue',
         weight: 1
       }
+    });
+
+    // Add the Parcel Map (filtered layer) initially showing all data
+    parcelLayer = L.geoJSON(data, {
+      onEachFeature: function (feature, layer) {
+        const { VDC, WARDNO, PARCELNO } = feature.properties;
+        layer.bindPopup(`VDC: ${VDC}<br>Ward No: ${WARDNO}<br>Parcel No: ${PARCELNO}`);
+      },
+      style: {
+        color: 'red',
+        weight: 2
+      }
     }).addTo(map);
+
+    // Fit the map to the bounds of all parcels initially
+    map.fitBounds(parcelLayer.getBounds());
 
     // Function to filter data based on query and display only the filtered parcels
     const displayFilteredData = (filterFunction) => {
+      // Clear the previous parcelLayer from the map
       if (parcelLayer) {
         map.removeLayer(parcelLayer);
       }
 
+      // Create a new parcelLayer with the filtered data
       parcelLayer = L.geoJSON(data, {
         filter: filterFunction,
         onEachFeature: function (feature, layer) {
@@ -45,6 +62,7 @@ fetch('data/kolvi_1.json')
         }
       }).addTo(map);
 
+      // Zoom to the filtered parcel's bounds
       if (parcelLayer.getLayers().length > 0) {
         map.fitBounds(parcelLayer.getBounds());
       } else {
@@ -83,8 +101,8 @@ fetch('data/kolvi_1.json')
       const div = L.DomUtil.create('div', 'legend');
       div.innerHTML = `
         <h4>Map Layers</h4>
-        <label><input type="checkbox" id="sheetMapCheckbox" checked> Sheet Map</label><br>
-        <label><input type="checkbox" id="parcelMapCheckbox"> Parcel Map</label>
+        <label><input type="checkbox" id="sheetMapCheckbox"> Sheet Map</label><br>
+        <label><input type="checkbox" id="parcelMapCheckbox" checked> Parcel Map</label>
       `;
       return div;
     };
