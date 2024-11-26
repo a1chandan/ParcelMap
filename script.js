@@ -23,7 +23,7 @@ fetch('data/kolvi_1.json')
       },
       style: {
         color: 'blue',
-        weight: 1
+        weight: 0.4
       }
     });
 
@@ -35,7 +35,7 @@ fetch('data/kolvi_1.json')
       },
       style: {
         color: 'red',
-        weight: 2
+        weight: 0.4
       }
     }).addTo(map);
 
