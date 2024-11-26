@@ -3,71 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parcel Map</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-measure/dist/leaflet-measure.css" />
-  <style>
-    #map {
-      height: 100vh;
-    }
-
-    #search-form {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: white;
-      padding: 10px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      width: 300px;
-    }
-
-    #search-form .form-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    #search-form input {
-      flex: 1;
-    }
-
-    #search-form button {
-      width: 100%;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    #search-form button:hover {
-      background-color: #0056b3;
-    }
-
-    .legend {
-      background: white;
-      padding: 10px;
-      border-radius: 5px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    }
-  </style>
+  <title>Land Parcel Webmap</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
 </head>
 <body>
-  <div id="map"></div>
-  <form id="search-form">
-    <div class="form-row">
-      <input type="text" id="vdc" placeholder="VDC" />
-      <input type="text" id="wardno" placeholder="Ward No" />
-      <input type="text" id="parcelno" placeholder="Parcel No" />
-    </div>
-    <button type="submit">Search</button>
-  </form>
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-measure/dist/leaflet-measure.js"></script>
+  <div id="map-container">
+    <div id="map"></div>
+  </div>
+  <div id="search-panel">
+    <h3>Search Parcel</h3>
+    <form id="search-form">
+      <label for="vdc">VDC:</label>
+      <input type="text" id="vdc" name="vdc" required>
+      <label for="wardno">Ward No:</label>
+      <input type="text" id="wardno" name="wardno" required>
+      <label for="parcelno">Parcel No:</label>
+      <input type="text" id="parcelno" name="parcelno" required>
+      <button type="submit">Search</button>
+    </form>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
