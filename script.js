@@ -69,14 +69,22 @@ fetch('data/kolvi_1.json')
       const parcelno = document.getElementById('parcelno').value;
 
       // Define the filter function
-      const filterFunction = (feature) => {
-        const { VDC, WARDNO, PARCELNO } = feature.properties;
-        return (
-          (!vdc || VDC === vdc) &&
-          (!wardno || WARDNO === wardno) &&
-          (!parcelno || PARCELNO === parcelno)
-        );
-      };
+    const filterFunction = (feature) => {
+      const { VDC, WARDNO, PARCELNO } = feature.properties;
+    
+      // Normalize query inputs (trim spaces and convert to correct types)
+      const normalizedVDC = vdc.trim() === '' ? null : parseInt(vdc.trim(), 10); // Convert VDC to number
+      const normalizedWARDNO = wardno.trim() === '' ? null : wardno.trim();      // Keep WARDNO as string
+      const normalizedPARCELNO = parcelno.trim() === '' ? null : parseInt(parcelno.trim(), 10); // Convert PARCELNO to number
+    
+      // Check if feature matches the query
+      return (
+        (normalizedVDC === null || VDC === normalizedVDC) &&
+        (normalizedWARDNO === null || WARDNO === normalizedWARDNO) &&
+        (normalizedPARCELNO === null || PARCELNO === normalizedPARCELNO)
+      );
+    };
+
 
       // Display only the filtered parcels
       displayFilteredData(filterFunction);
