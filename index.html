@@ -3,27 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Land Parcel Webmap</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
+  <title>Parcel Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-measure/dist/leaflet-measure.css" />
+  <style>
+    #map {
+      height: 100vh;
+    }
+
+    .legend {
+      background: white;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #search-form {
+      margin: 10px;
+    }
+
+    #search-form .form-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    #search-form button {
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
-  <div id="map-container">
-    <div id="map"></div>
-  </div>
-  <div id="search-panel">
-    <h3>Search Parcel</h3>
-    <form id="search-form">
-      <label for="vdc">VDC:</label>
-      <input type="text" id="vdc" name="vdc" required>
-      <label for="wardno">Ward No:</label>
-      <input type="text" id="wardno" name="wardno" required>
-      <label for="parcelno">Parcel No:</label>
-      <input type="text" id="parcelno" name="parcelno" required>
-      <button type="submit">Search</button>
-    </form>
-  </div>
-  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+  <div id="map"></div>
+  <form id="search-form">
+    <div class="form-row">
+      <input type="text" id="vdc" placeholder="VDC" />
+      <input type="text" id="wardno" placeholder="Ward No" />
+      <input type="text" id="parcelno" placeholder="Parcel No" />
+    </div>
+    <button type="submit">Search</button>
+  </form>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-measure/dist/leaflet-measure.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
