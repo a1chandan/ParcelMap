@@ -11,25 +11,48 @@
       height: 100vh;
     }
 
-    .legend {
+    #search-form {
+      position: fixed;
+      top: 10px;
+      left: 10px;
       background: white;
       padding: 10px;
       border-radius: 5px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    }
-
-    #search-form {
-      margin: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      width: 300px;
     }
 
     #search-form .form-row {
       display: flex;
       justify-content: space-between;
       gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    #search-form input {
+      flex: 1;
     }
 
     #search-form button {
       width: 100%;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #search-form button:hover {
+      background-color: #0056b3;
+    }
+
+    .legend {
+      background: white;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     }
   </style>
 </head>
