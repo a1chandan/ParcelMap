@@ -8,38 +8,31 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // Variables to store the GeoJSON layers
-let geojsonLayer; // Layer for the full dataset
-let parcelLayer;  // Layer for the filtered data
+let geojsonLayer; // Full dataset (Sheet Map)
+let parcelLayer;  // Filtered dataset (Parcel Map)
 
 // Load GeoJSON data
 fetch('data/kolvi_1.json')
   .then(response => response.json())
   .then(data => {
-    // Function to add the full GeoJSON data to the map
-    const loadFullData = () => {
-      geojsonLayer = L.geoJSON(data, {
-        onEachFeature: function (feature, layer) {
-          const { VDC, WARDNO, PARCELNO } = feature.properties;
-          layer.bindPopup(`VDC: ${VDC}<br>Ward No: ${WARDNO}<br>Parcel No: ${PARCELNO}`);
-        },
-        style: {
-          color: 'blue',
-          weight: 0.4
-        }
-      }).addTo(map);
-
-      // Zoom to the full extent of the data
-      map.fitBounds(geojsonLayer.getBounds());
-    };
+    // Add the full GeoJSON data as the Sheet Map
+    geojsonLayer = L.geoJSON(data, {
+      onEachFeature: function (feature, layer) {
+        const { VDC, WARDNO, PARCELNO } = feature.properties;
+        layer.bindPopup(`VDC: ${VDC}<br>Ward No: ${WARDNO}<br>Parcel No: ${PARCELNO}`);
+      },
+      style: {
+        color: 'blue',
+        weight: 1
+      }
+    }).addTo(map);
 
     // Function to filter data based on query and display only the filtered parcels
     const displayFilteredData = (filterFunction) => {
-      // Remove the existing filtered layer, if any
       if (parcelLayer) {
         map.removeLayer(parcelLayer);
       }
 
-      // Create a new layer for the filtered data
       parcelLayer = L.geoJSON(data, {
         filter: filterFunction,
         onEachFeature: function (feature, layer) {
@@ -48,13 +41,11 @@ fetch('data/kolvi_1.json')
         },
         style: {
           color: 'red',
-          weight: 1
+          weight: 2
         }
       }).addTo(map);
 
-      // Check if there are any matching parcels
       if (parcelLayer.getLayers().length > 0) {
-        // Zoom to the bounds of the filtered layer
         map.fitBounds(parcelLayer.getBounds());
       } else {
         alert('No parcels found matching your query.');
@@ -64,33 +55,57 @@ fetch('data/kolvi_1.json')
     // Add search functionality
     document.getElementById('search-form').addEventListener('submit', function (e) {
       e.preventDefault();
+
       const vdc = document.getElementById('vdc').value;
       const wardno = document.getElementById('wardno').value;
       const parcelno = document.getElementById('parcelno').value;
 
-      // Define the filter function
-    const filterFunction = (feature) => {
-      const { VDC, WARDNO, PARCELNO } = feature.properties;
-    
-      // Normalize query inputs (trim spaces and convert to correct types)
-      const normalizedVDC = vdc.trim() === '' ? null : parseInt(vdc.trim(), 10); // Convert VDC to number
-      const normalizedWARDNO = wardno.trim() === '' ? null : wardno.trim();      // Keep WARDNO as string
-      const normalizedPARCELNO = parcelno.trim() === '' ? null : parseInt(parcelno.trim(), 10); // Convert PARCELNO to number
-    
-      // Check if feature matches the query
-      return (
-        (normalizedVDC === null || VDC === normalizedVDC) &&
-        (normalizedWARDNO === null || WARDNO === normalizedWARDNO) &&
-        (normalizedPARCELNO === null || PARCELNO === normalizedPARCELNO)
-      );
-    };
+      const filterFunction = (feature) => {
+        const { VDC, WARDNO, PARCELNO } = feature.properties;
+        const normalizedVDC = vdc.trim() === '' ? null : parseInt(vdc.trim(), 10);
+        const normalizedWARDNO = wardno.trim() === '' ? null : wardno.trim();
+        const normalizedPARCELNO = parcelno.trim() === '' ? null : parseInt(parcelno.trim(), 10);
 
+        return (
+          (normalizedVDC === null || VDC === normalizedVDC) &&
+          (normalizedWARDNO === null || WARDNO === normalizedWARDNO) &&
+          (normalizedPARCELNO === null || PARCELNO === normalizedPARCELNO)
+        );
+      };
 
-      // Display only the filtered parcels
       displayFilteredData(filterFunction);
     });
 
-    // Load the full data initially
-    loadFullData();
+    // Create a legend with checkboxes
+    const legend = L.control({ position: 'topright' });
+
+    legend.onAdd = function () {
+      const div = L.DomUtil.create('div', 'legend');
+      div.innerHTML = `
+        <h4>Map Layers</h4>
+        <label><input type="checkbox" id="sheetMapCheckbox" checked> Sheet Map</label><br>
+        <label><input type="checkbox" id="parcelMapCheckbox"> Parcel Map</label>
+      `;
+      return div;
+    };
+
+    legend.addTo(map);
+
+    // Handle checkbox changes
+    document.getElementById('sheetMapCheckbox').addEventListener('change', function () {
+      if (this.checked) {
+        map.addLayer(geojsonLayer);
+      } else {
+        map.removeLayer(geojsonLayer);
+      }
+    });
+
+    document.getElementById('parcelMapCheckbox').addEventListener('change', function () {
+      if (this.checked && parcelLayer) {
+        map.addLayer(parcelLayer);
+      } else if (parcelLayer) {
+        map.removeLayer(parcelLayer);
+      }
+    });
   })
   .catch(error => console.error('Error loading GeoJSON:', error));
